@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>GameShelf3D</title>
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' blob:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' asset: data:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net;"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <div id="errors" style="color:red; z-index: 9999; position: absolute; top:0; left:0; font-family: monospace; white-space: pre-wrap; background: rgba(0,0,0,0.8);"></div>
+    <script>
+      window.addEventListener('error', (event) => {
+        document.getElementById('errors').innerText += (event.error ? event.error.stack : event.message) + '\n';
+      });
+      window.addEventListener('unhandledrejection', (event) => {
+        document.getElementById('errors').innerText += (event.reason ? event.reason.stack : event.reason) + '\n';
+      });
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

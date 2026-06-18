@@ -1,0 +1,17 @@
+Executing: C:\Users\npola\AppData\Local\Playnite\Playnite.DesktopApp.exe --start d6a43d94-a0fe-48c4-b186-9c339898d03f
+Executing: C:\Users\npola\AppData\Local\Playnite\Playnite.DesktopApp.exe --start 030c9855-b9b1-45c5-9789-d6ea5e2ec2a0
+Executing: C:\Users\npola\AppData\Local\Playnite\Playnite.DesktopApp.exe --start d6a43d94-a0fe-48c4-b186-9c339898d03f
+Executing: C:\Users\npola\AppData\Local\Playnite\Playnite.DesktopApp.exe --start d6a43d94-a0fe-48c4-b186-9c339898d03f
+Executing: C:\Users\npola\AppData\Local\Playnite\Playnite.DesktopApp.exe --start d6a43d94-a0fe-48c4-b186-9c339898d03f
+Executing: C:\Users\npola\AppData\Local\Playnite\Playnite.DesktopApp.exe --start d6a43d94-a0fe-48c4-b186-9c339898d03f
+Executing: C:\Users\npola\AppData\Local\Playnite\Playnite.DesktopApp.exe --start d6a43d94-a0fe-48c4-b186-9c339898d03f
+Executing: C:\Users\npola\AppData\Local\Playnite\Playnite.DesktopApp.exe --start d6a43d94-a0fe-48c4-b186-9c339898d03f
+Executing: C:\Users\npola\AppData\Local\Playnite\Playnite.DesktopApp.exe --start d6a43d94-a0fe-48c4-b186-9c339898d03f
+Executing: C:\Users\npola\AppData\Local\Playnite\Playnite.DesktopApp.exe --start d6a43d94-a0fe-48c4-b186-9c339898d03f
+Executing: C:\Users\npola\AppData\Local\Playnite\Playnite.DesktopApp.exe --start d6a43d94-a0fe-48c4-b186-9c339898d03f
+Executing: C:\Users\npola\AppData\Local\Playnite\Playnite.DesktopApp.exe --start d6a43d94-a0fe-48c4-b186-9c339898d03f
+Success! Stdout: 
+Executing: C:\Users\npola\AppData\Local\Playnite\Playnite.DesktopApp.exe --start 13a3f17e-cf35-4307-9bd9-fcc246dd2623
+Success! Stdout: 
+Executing: C:\Users\npola\AppData\Local\Playnite\Playnite.DesktopApp.exe --start ba21f09a-4849-4bbf-a2a0-ee2a946da05e
+Success! Stdout: 
