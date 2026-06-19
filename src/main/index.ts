@@ -1,7 +1,7 @@
 import { app, shell, BrowserWindow, ipcMain, protocol, net } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import { fetchPlayniteGames, getPlayniteImagePath, launchGame } from './playnite'
+import { fetchPlayniteGames, getPlayniteImagePath, launchGame, suggestGame } from './playnite'
 
 // Register asset protocol
 protocol.registerSchemesAsPrivileged([
@@ -13,7 +13,7 @@ function createWindow(): void {
   const mainWindow = new BrowserWindow({
     width: 1280,
     height: 720,
-    show: false,
+    show: true,
     autoHideMenuBar: true,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
@@ -78,6 +78,10 @@ app.whenReady().then(() => {
   ipcMain.handle('launch-game', (_event, gameId) => {
     // Launch the game via Playnite CLI explicitly, bypassing Windows URI bugs
     launchGame(gameId)
+  })
+
+  ipcMain.handle('suggest-game', async () => {
+    return await suggestGame()
   })
 
   createWindow()

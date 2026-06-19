@@ -5,7 +5,8 @@ import { electronAPI } from '@electron-toolkit/preload'
 const api = {
   getGames: () => ipcRenderer.invoke('get-games'),
   getImagePath: (imageId: string) => ipcRenderer.invoke('get-image-path', imageId),
-  launchGame: (gameId: string) => ipcRenderer.invoke('launch-game', gameId)
+  launchGame: (gameId: string) => ipcRenderer.invoke('launch-game', gameId),
+  suggestGame: () => ipcRenderer.invoke('suggest-game')
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

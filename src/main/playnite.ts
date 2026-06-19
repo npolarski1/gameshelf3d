@@ -119,3 +119,33 @@ export function showGame(gameId: string): void {
     }
   })
 }
+
+export async function suggestGame(): Promise<any> {
+  return new Promise((resolve, reject) => {
+    const exportPath = path.join(__dirname, '../../playnite_export.json')
+    const exePath = path.join(__dirname, '../../sparsi-workflows/suggest-game/suggestgame.exe')
+    
+    if (!fs.existsSync(exportPath)) {
+      return reject(new Error('playnite_export.json not found'))
+    }
+    
+    if (!fs.existsSync(exePath)) {
+      return reject(new Error('suggestgame.exe not found. Please compile it first.'))
+    }
+
+    require('child_process').execFile(exePath, ['-library_path', exportPath], (error, stdout, stderr) => {
+      if (error) {
+        console.error('Suggest Game Error:', stderr || error.message)
+        return reject(new Error(stderr || error.message))
+      }
+      try {
+        const result = JSON.parse(stdout)
+        resolve(result)
+      } catch (parseErr) {
+        console.error('Suggest Game Parse Error:', parseErr, stdout)
+        reject(new Error('Failed to parse suggestion output'))
+      }
+    })
+  })
+}
+

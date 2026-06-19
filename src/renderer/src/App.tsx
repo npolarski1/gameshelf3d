@@ -210,7 +210,7 @@ function ScrollableShelf({ games, rows, cols, shelfWidth, shelfHeight, maxScroll
       // The camera targets Y=3. So the center of the viewport is Y=3.
       // Top of the viewport is 3 + viewport.height / 2.
       // We subtract padding to account for perspective tilt and leave a nice top margin
-      const topPadding = 1.8
+      const topPadding = 3.0
       const topY = 3 + viewport.height / 2 - topPadding
       groupRef.current.position.y = topY + scroll.offset * maxScroll
     }
@@ -281,6 +281,8 @@ function App(): JSX.Element {
   const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(true)
   const [sceneReady, setSceneReady] = useState(false)
+  const [suggesting, setSuggesting] = useState(false)
+  const [suggestion, setSuggestion] = useState<{ game_id: string; game_name: string; pitch: string } | null>(null)
 
   useEffect(() => {
     window.api.getGames().then((loadedGames) => {
@@ -298,44 +300,168 @@ function App(): JSX.Element {
       <LoadingScreen sceneReady={sceneReady} />
       
       {!loading && (
-        <div style={{
-          position: 'absolute',
-          top: 20,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 100
-        }}>
-          <input 
-            type="text" 
-            placeholder="Search games..." 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              fontFamily: "'Rajdhani', sans-serif",
-              padding: '12px 24px',
-              fontSize: '18px',
-              fontWeight: 600,
-              letterSpacing: '1px',
-              borderRadius: '24px',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              background: 'rgba(0, 0, 0, 0.5)',
-              color: 'white',
-              width: '300px',
-              backdropFilter: 'blur(10px)',
-              outline: 'none',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)',
-              transition: 'border-color 0.2s, box-shadow 0.2s'
-            }}
-            onFocus={(e) => {
-              e.target.style.borderColor = 'rgba(255, 204, 153, 0.6)'
-              e.target.style.boxShadow = '0 4px 16px rgba(255, 204, 153, 0.3)'
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)'
-              e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.5)'
-            }}
-          />
-        </div>
+        <>
+          <div style={{
+            position: 'absolute',
+            top: 20,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 100,
+            display: 'flex',
+            gap: '12px'
+          }}>
+            <input 
+              type="text" 
+              placeholder="Search games..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                fontFamily: "'Rajdhani', sans-serif",
+                padding: '12px 24px',
+                fontSize: '18px',
+                fontWeight: 600,
+                letterSpacing: '1px',
+                borderRadius: '24px',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                background: 'rgba(0, 0, 0, 0.5)',
+                color: 'white',
+                width: '300px',
+                backdropFilter: 'blur(10px)',
+                outline: 'none',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)',
+                transition: 'border-color 0.2s, box-shadow 0.2s'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = 'rgba(255, 204, 153, 0.6)'
+                e.target.style.boxShadow = '0 4px 16px rgba(255, 204, 153, 0.3)'
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)'
+                e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.5)'
+              }}
+            />
+            <button
+              onClick={async () => {
+                setSuggesting(true)
+                try {
+                  const res = await window.api.suggestGame()
+                  setSuggestion(res)
+                } catch (err) {
+                  alert(err.message)
+                } finally {
+                  setSuggesting(false)
+                }
+              }}
+              disabled={suggesting}
+              style={{
+                fontFamily: "'Rajdhani', sans-serif",
+                padding: '12px 24px',
+                fontSize: '18px',
+                fontWeight: 700,
+                letterSpacing: '1px',
+                borderRadius: '24px',
+                border: '1px solid rgba(255, 204, 153, 0.4)',
+                background: suggesting ? 'rgba(0,0,0,0.5)' : 'linear-gradient(135deg, rgba(255, 153, 102, 0.2), rgba(255, 204, 153, 0.1))',
+                color: '#ffcc99',
+                backdropFilter: 'blur(10px)',
+                cursor: suggesting ? 'wait' : 'pointer',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)',
+                transition: 'all 0.2s'
+              }}
+              onMouseOver={(e) => {
+                if (!suggesting) {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255, 153, 102, 0.4), rgba(255, 204, 153, 0.3))'
+                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(255, 204, 153, 0.4)'
+                }
+              }}
+              onMouseOut={(e) => {
+                if (!suggesting) {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255, 153, 102, 0.2), rgba(255, 204, 153, 0.1))'
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.5)'
+                }
+              }}
+            >
+              {suggesting ? 'THINKING...' : 'SUGGEST GAME'}
+            </button>
+          </div>
+
+          {suggestion && (
+            <div style={{
+              position: 'absolute',
+              top: 0, left: 0, right: 0, bottom: 0,
+              background: 'rgba(0,0,0,0.8)',
+              backdropFilter: 'blur(8px)',
+              zIndex: 200,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              fontFamily: "'Rajdhani', sans-serif"
+            }}>
+              <div style={{
+                background: 'linear-gradient(180deg, #1a1a1a, #0d0d0d)',
+                border: '1px solid rgba(255, 204, 153, 0.3)',
+                borderRadius: '16px',
+                padding: '40px',
+                maxWidth: '600px',
+                textAlign: 'center',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.8), 0 0 40px rgba(255, 153, 102, 0.1)'
+              }}>
+                <h3 style={{ color: '#ffcc99', margin: '0 0 10px 0', fontSize: '1.2rem', letterSpacing: '2px', textTransform: 'uppercase' }}>
+                  Suggestion
+                </h3>
+                <h1 style={{ color: 'white', margin: '0 0 20px 0', fontSize: '2.5rem', fontWeight: 700 }}>
+                  {suggestion.game_name}
+                </h1>
+                <p style={{ color: '#ccc', fontSize: '1.2rem', lineHeight: '1.6', marginBottom: '30px', fontStyle: 'italic' }}>
+                  "{suggestion.pitch}"
+                </p>
+                <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
+                  <button
+                    onClick={() => {
+                      window.api.launchGame(suggestion.game_id)
+                      setSuggestion(null)
+                    }}
+                    style={{
+                      fontFamily: "'Rajdhani', sans-serif",
+                      background: '#ffcc99',
+                      color: '#000',
+                      border: 'none',
+                      padding: '12px 32px',
+                      borderRadius: '8px',
+                      fontSize: '1.2rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      transition: 'transform 0.1s'
+                    }}
+                    onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
+                    onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                  >
+                    PLAY NOW
+                  </button>
+                  <button
+                    onClick={() => setSuggestion(null)}
+                    style={{
+                      fontFamily: "'Rajdhani', sans-serif",
+                      background: 'transparent',
+                      color: '#ffcc99',
+                      border: '1px solid #ffcc99',
+                      padding: '12px 32px',
+                      borderRadius: '8px',
+                      fontSize: '1.2rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      transition: 'background 0.2s'
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255, 204, 153, 0.1)'}
+                    onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                  >
+                    CLOSE
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       {/* Moved camera back to Z=16 to ensure everything fits better on screen */}
